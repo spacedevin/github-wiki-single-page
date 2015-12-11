@@ -1,0 +1,7 @@
+{
+	"name": "Github Wiki Single Page",
+	"description": "A single page wiki generator using redcarpet, bootstrap, and bootswatch.",
+	"website": "https://github.com/arzynik/github-wiki-singlepage",
+	"repository": "https://github.com/arzynik/github-wiki-singlepage",
+	"keywords": ["github", "wiki", "ruby", "markdown"]
+}

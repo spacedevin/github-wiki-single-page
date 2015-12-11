@@ -1,27 +1,69 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Wiki</title>
+		<title><name></name></title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha256-sHwgyDk4CGNYom267UJX364ewnY4Bh55d53pxP5WDug= sha512-mkkeSf+MM3dyMWg3k9hcAttl7IVHe2BA1o/5xKLl4kBaP0bih7Mzz/DBy4y6cNZCHtE2tPgYBYH/KtEjOQYKxA==" crossorigin="anonymous">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/github.min.css" rel="stylesheet">
 		<style>
 			body {
-				
+
 			}
-			container {
+			nav {
+			}
+			.wiki {
+			}
+			.container {
 				padding: 2em;
+				width: 1024px;
+			}
+			ol {
+				padding-left: 1.8em;
+			}
+			section {
+				margin-top: 4em;
+				margin-bottom: 4em;
+			}
+			section:first-child {
+				margin-top: 0;
+			}
+			h1 {
+				margin-bottom: .7em;
+				margin-top: 0;
+			}
+			ol ol, ul ol {
+				list-style-type: lower-roman;
+			}
+			.footer {
+				text-align: center;
+			}
+			.project {
+				float: right;
+			}
+			.hljs {
+				background: none;
 			}
 		</style>
 	</head>
 	<body>
-		<container>
-			<nav></nav>
-			<section></section>
-			<footer></footer>
-		</container>
+		<div class="container">
+			<header>
+				<a href="<project></project>" class="project">GitHub Project</a>
+				<h1><name></name></h1>
+				<hr>
+			</header>
+			<div class="col-md-4"><nav></nav></div>
+			<div class="col-md-8"><div class="wiki"></div></div>
+			<div class="col-md-12" class="footer">
+				<footer></footer>
+				Created using arzynik/github-wiki-singlepage
+			</div>
+		</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
 	</body>
 </html>

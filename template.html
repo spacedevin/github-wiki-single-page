@@ -9,15 +9,37 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/github.min.css" rel="stylesheet">
 		<style>
 			body {
+				position: relative;
+			}
 
+			@media (min-width: 1024px) {
+				.content {
+					padding-left: 250px;
+					margin-top: 100px;
+				}
+				.links {
+					position: fixed;
+					margin-left: -50px;
+					margin-top: 10px;
+					width: 250px;
+					height: 100%;
+					overflow-y: auto;
+					z-index: 1000;
+					transition: all 0.4s ease 0s;
+				}
+				nav {
+					width: 250px;
+				}
+				nav > ol {
+					position: absolute;
+					width: 250px;
+
+				}
 			}
-			nav {
-			}
-			.wiki {
-			}
-			.container {
-				padding: 2em;
-				width: 1024px;
+			@media (max-width: 1023px) {
+				nav {
+					margin-bottom: 4em;
+				}
 			}
 			ol {
 				padding-left: 1.8em;
@@ -33,7 +55,7 @@
 				margin-bottom: .7em;
 				margin-top: 0;
 			}
-			ol ol, ul ol {
+			ol ol {
 				list-style-type: lower-roman;
 			}
 			.footer {
@@ -45,22 +67,47 @@
 			.hljs {
 				background: none;
 			}
+			.content {
+				width: 100%;
+			}
+			.nav li.active > a {
+				font-weight: bold;
+			}
+			.wrapper {
+				max-width: 1024px;
+				margin: 0 auto;
+			}
+			.navbar {
+				width: 100%;
+				background: rgba(255,255,255,.9);
+				padding-top: 1em;
+			}
+			.navbar hr {
+				margin-bottom: 0;
+			}
 		</style>
 	</head>
-	<body>
-		<div class="container">
-			<header>
-				<a href="<project></project>" class="project">GitHub Project</a>
-				<h1><name></name></h1>
-				<hr>
-			</header>
-			<div class="col-md-4"><nav></nav></div>
-			<div class="col-md-8"><div class="wiki"></div></div>
-			<div class="col-md-12" class="footer">
-				<footer></footer>
-				Created using arzynik/github-wiki-singlepage
+	<body data-spy="scroll" data-target=".links">
+		<div class="wrapper">
+
+			<nav class="navbar navbar-fixed-top">
+				<div class="container">
+					<a href="<project></project>" class="project">GitHub Project</a>
+					<h1><name></name></h1>
+					<hr>
+				</div>
+			</nav>
+
+			<div class=" links"><nav></nav></div>
+			<div class="container content">
+				<div><div class="wiki"></div></div>
+				<div class="col-md-12" class="footer">
+					<footer></footer>
+					Created using arzynik/github-wiki-singlepage
+				</div>
 			</div>
 		</div>
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script>

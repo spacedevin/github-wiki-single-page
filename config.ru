@@ -30,11 +30,12 @@ end
 
 #newindex = GitHub::Markup.render(path + '_Sidebar.md', newindex)
 newindex = markdown.render(newindex)
+#newindex = newindex.sub(/<ol>/, '<ol class="nav">')
 
 pages.each do |page|
 	file = File.read(path + page + '.md');
 	file = file.gsub(/(\[.*?\])\(#{base}(.*?)\)$/, '\1(#\2)')
-	content += '<section><a name="' + page + '"></a><h1>' + page.gsub(/-/, ' ') + '</h1>'
+	content += '<section id="' + page + '"><h1>' + page.gsub(/-/, ' ') + '</h1>'
 	#content += GitHub::Markup.render(path + page + '.md', file) + "\n"
 	content += markdown.render(file)
 	content += '</section><hr>'
@@ -45,7 +46,7 @@ end
 template = File.read('template.html')
 template = template.gsub(/<name><\/name>/, name + ' docs');
 template = template.gsub(/<project><\/project>/, project);
-template = template.gsub(/<nav><\/nav>/, '<nav>' + newindex + '</nav>');
+template = template.gsub(/<nav><\/nav>/, '<nav class="nav">' + newindex + '</nav>');
 template = template.gsub(/<div class="wiki"><\/div>/, '<div class="wiki">' + content + '</div>');
 
 run lambda { |env| [200, {'Content-Type'=>'text/html'}, StringIO.new(template)] }

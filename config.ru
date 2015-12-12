@@ -98,8 +98,8 @@ end
 
 
 get '/:owner/:repo' do
-	if ENV['WIKI_CACHE']
-		repo = ENV['WIKI_CACHE'].split('/')
+	if ENV['WIKI_REPO']
+		repo = ENV['WIKI_REPO'].split('/')
 		Wiki.create(repo[0], repo[1], params)
 	else
 		Wiki.create(params['owner'], params['repo'], params)
@@ -108,8 +108,8 @@ end
 
 
 get '/' do
-	if ENV['WIKI_CACHE']
-		repo = ENV['WIKI_CACHE'].split('/')
+	if ENV['WIKI_REPO']
+		repo = ENV['WIKI_REPO'].split('/')
 		Wiki.create(repo[0], repo[1], params)
 	else
 		Wiki.index('')

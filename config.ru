@@ -1,5 +1,6 @@
 require 'redcarpet'
 require 'sinatra'
+require 'erb'
 
 configure {
 	set :server, :puma
@@ -18,7 +19,7 @@ get '/:owner/:repo' do
 	name = repo
 
 	pages = []
-	newindex = ''
+	nav = ''
 	content = ''
 	tmp = '/tmp/' + Random.new_seed.to_s
 	system('git clone ' + project + '.wiki.git ' + tmp)
@@ -41,7 +42,7 @@ get '/:owner/:repo' do
 		end
 	end
 
-	newindex = markdown.render(index)
+	nav = markdown.render(index)
 
 	pages.each do |page|
 		if !File.exist?(tmp + '/' + page + '.md')
@@ -59,13 +60,9 @@ get '/:owner/:repo' do
 		content += '</section><hr>'
 	end
 
-	template = File.read('template.html')
-	template = template.gsub(/<name><\/name>/, name + ' docs');
-	template = template.gsub(/<project><\/project>/, project);
-	template = template.gsub(/<nav><\/nav>/, '<nav class="nav">' + newindex + '</nav>');
-	template = template.gsub(/<div class="wiki"><\/div>/, '<div class="wiki">' + content + '</div>');
-	return template
-	#run lambda { |env| [200, {'Content-Type'=>'text/html'}, StringIO.new(template)] }
+	erb = ERB.new(File.read('template.erb'))
+	namespace = OpenStruct.new(nav: nav, project: project, content: content, name: name)
+	return erb.result(namespace.instance_eval { binding })
 
 end
 

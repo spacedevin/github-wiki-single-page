@@ -59,7 +59,13 @@ get '/:owner/:repo' do
 	end
 
 	erb = ERB.new(File.read('template.erb'))
-	namespace = OpenStruct.new(nav: nav, project: project, content: content, name: name)
+	namespace = OpenStruct.new(
+		nav: nav,
+		project: project,
+		content: content,
+		name: name,
+		bootswatch: params['bootswatch'] ? params['bootswatch'] : 'flatly'
+	)
 	return erb.result(namespace.instance_eval { binding })
 
 end

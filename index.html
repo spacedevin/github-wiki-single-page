@@ -6,9 +6,6 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet" integrity="sha256-sHwgyDk4CGNYom267UJX364ewnY4Bh55d53pxP5WDug= sha512-mkkeSf+MM3dyMWg3k9hcAttl7IVHe2BA1o/5xKLl4kBaP0bih7Mzz/DBy4y6cNZCHtE2tPgYBYH/KtEjOQYKxA==" crossorigin="anonymous">
-		<style>
-
-		</style>
 	</head>
 	<body>
 		<div class="wrapper">
@@ -24,7 +21,7 @@
 					<input type="text" name="repo" placeholder="owner/repo" autofocus="" class="form-control">
 				</div>
 				<div class="form-group">
-					<label for="password" class="control-label">Bootswatch theme</label>
+					<label for="password" class="control-label">Bootswatch theme &nbsp;(<a href="https://www.bootstrapcdn.com/bootswatch/" target="_blank">Examples</a>)</label>
 					<select class="form-control" name="bootswatch">
 						<option value="cerulean">Cerulean</option>
 						<option value="cosmo">Cosmo</option>
@@ -44,23 +41,73 @@
 					</select>
 				</div>
 				<div class="form-group">
-					<label for="password" class="control-label">Highlight theme</label>
-					<select class="form-control" name="bootswatch">
-						<option value="cerulean">Cerulean</option>
-						<option value="cosmo">Cosmo</option>
-						<option value="cyborg">Cyborg</option>
-						<option value="flatly" selected>Flatly</option>
-						<option value="journal">Journal</option>
-						<option value="lumen">Lumen</option>
-						<option value="paper">Paper</option>
-						<option value="readable">Readable</option>
-						<option value="sandstone">Sandstone</option>
-						<option value="simplex">Simplex</option>
-						<option value="slate">Slate</option>
-						<option value="spacelab">Spacelab</option>
-						<option value="superhero">Superhero</option>
-						<option value="united">United</option>
-						<option value="yeti">Yeti</option>
+					<label for="password" class="control-label">Highlight theme &nbsp;(<a href="https://highlightjs.org/static/demo/" target="_blank">Examples</a>)</label>
+					<select class="form-control" name="highlightjs">
+						<option>agate</option>
+						<option>androidstudio</option>
+						<option>arta</option>
+						<option>ascetic</option>
+						<option>atelier-cave-dark</option>
+						<option>atelier-cave-light</option>
+						<option>atelier-dune-dark</option>
+						<option>atelier-dune-light</option>
+						<option>atelier-estuary-dark</option>
+						<option>atelier-estuary-light</option>
+						<option>atelier-forest-dark</option>
+						<option>atelier-forest-light</option>
+						<option>atelier-heath-dark</option>
+						<option>atelier-heath-light</option>
+						<option>atelier-lakeside-dark</option>
+						<option>atelier-lakeside-light</option>
+						<option>atelier-plateau-dark</option>
+						<option>atelier-plateau-light</option>
+						<option>atelier-savanna-dark</option>
+						<option>atelier-savanna-light</option>
+						<option>atelier-seaside-dark</option>
+						<option>atelier-seaside-light</option>
+						<option>atelier-sulphurpool-dark</option>
+						<option>atelier-sulphurpool-light</option>
+						<option>brown-paper</option>
+						<option>codepen-embed</option>
+						<option>color-brewer</option>
+						<option>dark</option>
+						<option>darkula</option>
+						<option>default</option>
+						<option>docco</option>
+						<option>far</option>
+						<option>foundation</option>
+						<option>github-gist</option>
+						<option selected>github</option>
+						<option>googlecode</option>
+						<option>grayscale</option>
+						<option>hopscotch</option>
+						<option>hybrid</option>
+						<option>idea</option>
+						<option>ir-black</option>
+						<option>kimbie.dark</option>
+						<option>kimbie.light</option>
+						<option>magula</option>
+						<option>mono-blue</option>
+						<option>monokai-sublime</option>
+						<option>monokai</option>
+						<option>obsidian</option>
+						<option>paraiso-dark</option>
+						<option>paraiso-light</option>
+						<option>pojoaque</option>
+						<option>railscasts</option>
+						<option>rainbow</option>
+						<option>school-book</option>
+						<option>solarized-dark</option>
+						<option>solarized-light</option>
+						<option>sunburst</option>
+						<option>tomorrow-night-blue</option>
+						<option>tomorrow-night-bright</option>
+						<option>tomorrow-night-eighties</option>
+						<option>tomorrow-night</option>
+						<option>tomorrow</option>
+						<option>vs</option>
+						<option>xcode</option>
+						<option>zenburn</option>
 					</select>
 				</div>
 				<div class="form-group">
@@ -75,7 +122,7 @@
 		<script>
 			$(document).ready(function() {
 				$('#form').on('submit', function(e) {
-					location.href = '/' + $(this['repo']).val() + '?bootswatch=' + $(this['bootswatch']).val()
+					location.href = '/' + $(this['repo']).val() + '?bootswatch=' + $(this['bootswatch']).val() + '&highlightjs=' + $(this['highlightjs']).val();
 					e.preventDefault();
 					return false;
 				});

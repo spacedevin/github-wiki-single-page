@@ -64,7 +64,8 @@ get '/:owner/:repo' do
 		project: project,
 		content: content,
 		name: name,
-		bootswatch: params['bootswatch'] ? params['bootswatch'] : 'flatly'
+		bootswatch: params['bootswatch'] ? params['bootswatch'] : 'flatly',
+		highlightjs: params['highlightjs'] ? params['highlightjs'] : 'github'
 	)
 	return erb.result(namespace.instance_eval { binding })
 

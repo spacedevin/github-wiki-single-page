@@ -125,8 +125,14 @@
 		<script>
 			$(document).ready(function() {
 				$('#form').on('submit', function(e) {
-					location.href = '/' + $(this['repo']).val() + '?bootswatch=' + $(this['bootswatch']).val() + '&highlightjs=' + $(this['highlightjs']).val();
 					e.preventDefault();
+					var repo = $(this['repo']).val();
+					if (repo.match(/^(http|git)/i)) {
+						var parser = document.createElement('a');
+						parser.href = repo;
+						repo = parser.pathname.substr(1);
+					}
+					location.href = '/' + repo + '?bootswatch=' + $(this['bootswatch']).val() + '&highlightjs=' + $(this['highlightjs']).val();
 					return false;
 				});
 			});

@@ -16,6 +16,10 @@
 				</div>
 				<form id="form">
 
+				<% if error != '' %>
+					<div class="alert alert-danger" role="alert"><%= error %></div>
+				<% end %>
+
 				<div class="form-group">
 					<label for="repo" class="control-label">GitHub Repository</label>
 					<input type="text" name="repo" id="repo" placeholder="owner/repo" autofocus="" class="form-control">

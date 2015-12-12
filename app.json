@@ -15,5 +15,15 @@
 			"required": false,
 			"value": ""
 		},
+		"WIKI_BOOTSWATCH": {
+			"description": "The default bootswatch theme",
+			"required": false,
+			"value": "Flatly"
+		},
+		"WIKI_HIGHLIGHTJS": {
+			"description": "The default highlightjs theme",
+			"required": false,
+			"value": "github"
+		}
 	}
 }

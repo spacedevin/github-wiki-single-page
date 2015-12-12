@@ -3,11 +3,18 @@ require 'sinatra'
 require 'erb'
 require 'fileutils'
 
-configure {
-	set :server, :puma
-}
 
 class Wiki
+	def self.index(error)
+		erb = ERB.new(File.read('index.erb'))
+		namespace = OpenStruct.new(
+			error: error,
+			bootswatch: ENV['WIKI_BOOTSWATCH'] ? ENV['WIKI_BOOTSWATCH'] : 'Flatly',
+			highlightjs: ENV['WIKI_HIGHLIGHTJS'] ? ENV['WIKI_HIGHLIGHTJS'] : 'github'
+		)
+		return erb.result(namespace.instance_eval { binding })
+	end
+
 	def self.create(owner, repo, params)
 		markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true, lax_spacing: true, space_after_headers: true, with_toc_data: true)
 
@@ -27,6 +34,14 @@ class Wiki
 		end
 
 		system('git clone ' + project + '.wiki.git ' + tmp)
+
+		if !File.exist?(tmp + '/.git')
+			return Wiki.index('Invalid repository')
+		end
+
+		if !File.exist?(tmp + '/_Sidebar.md')
+			return Wiki.index('No custom sidebar')
+		end
 
 		index = File.read(tmp + '/_Sidebar.md')
 
@@ -69,8 +84,8 @@ class Wiki
 			project: project,
 			content: content,
 			name: name,
-			bootswatch: params['bootswatch'] ? params['bootswatch'] : 'flatly',
-			highlightjs: params['highlightjs'] ? params['highlightjs'] : 'github'
+			bootswatch: params['bootswatch'] ? params['bootswatch'] : (ENV['WIKI_BOOTSWATCH'] ? ENV['WIKI_BOOTSWATCH'] : 'flatly'),
+			highlightjs: params['highlightjs'] ? params['highlightjs'] : (ENV['WIKI_BOOTSWATCH'] ? ENV['WIKI_BOOTSWATCH'] : 'github')
 		)
 
 		if !cache
@@ -83,16 +98,23 @@ end
 
 
 get '/:owner/:repo' do
-	Wiki.create(params['owner'], params['repo'], params)
+	if ENV['WIKI_CACHE']
+		repo = ENV['WIKI_CACHE'].split('/')
+		Wiki.create(repo[0], repo[1], params)
+	else
+		Wiki.create(params['owner'], params['repo'], params)
+	end
 end
+
 
 get '/' do
 	if ENV['WIKI_CACHE']
 		repo = ENV['WIKI_CACHE'].split('/')
 		Wiki.create(repo[0], repo[1], params)
 	else
-		File.read('index.html')
+		Wiki.index('')
 	end
 end
+
 
 run Sinatra::Application.run!

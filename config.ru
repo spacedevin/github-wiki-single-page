@@ -27,10 +27,7 @@ get '/:owner/:repo' do
 	index = File.read(tmp + '/_Sidebar.md')
 
 	index = index.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
-	index = index.gsub(/\[\[(.*?)\]\]/i, '[\1](#\1)')
-
-	# this should repeat and place all spaces...not just one
-	index = index.gsub(/\(#(.*) (.*)\)/i, '(#\1-\2)')
+	index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
 	index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 	index = index.gsub(/\(#\)/, '(#top)')
 
@@ -53,10 +50,8 @@ get '/:owner/:repo' do
 		file = File.read(tmp + '/' + page + '.md');
 
 		file = file.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
-		file = file.gsub(/\[\[(.*?)\]\]/i, '[\1](#\1)')
-
-		# this should repeat and place all spaces...not just one
-		file = file.gsub(/\(#(.*) (.*)\)/i, '(#\1-\2)')
+		file = file.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
+		file = file.gsub(/\s(?=[^\(\)]*]])/, '-')
 		file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
 		content += '<div class="link" id="' + page + '"></div><section><h1>' + page.gsub(/-/, ' ') + '</h1>'

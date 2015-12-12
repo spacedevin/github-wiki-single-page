@@ -60,8 +60,8 @@ when 'cerulean' %>
 				}
 			}
 			@media (max-width: 1023px) {
-				nav {
-					margin-bottom: 4em;
+				.link:first-child {
+					margin: 0;
 				}
 			}
 			ol.nav {
@@ -73,6 +73,13 @@ when 'cerulean' %>
 			}
 			.link:not(:first-child) {
 				margin-bottom: 4em;
+			}
+			.navbar-nav>li>a {
+				padding-top: 7px;
+				padding-bottom: 7px;
+			}
+			.navbar-fixed-top .nav-pills>li {
+				float: none;
 			}
 			h1 {
 				margin-bottom: .7em;
@@ -126,8 +133,6 @@ when 'cerulean' %>
 	</head>
 	<body data-spy="scroll" data-target=".links">
 		<div class="wrapper">
-
-
 			<nav class="navbar navbar-default navbar-fixed-top">
 				<div class="container">
 					<div class="navbar-header">

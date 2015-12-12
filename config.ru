@@ -51,7 +51,14 @@ get '/:owner/:repo' do
 			return page + ' does not exist'
 		end
 		file = File.read(tmp + '/' + page + '.md');
-		file = file.gsub(/(\[.*?\])\(#{base}(.*?)\)$/, '\1(#\2)')
+
+		file = file.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
+		file = file.gsub(/\[\[(.*?)\]\]/i, '[\1](#\1)')
+
+		# this should repeat and place all spaces...not just one
+		file = file.gsub(/\(#(.*) (.*)\)/i, '(#\1-\2)')
+		file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
+
 		content += '<div class="link" id="' + page + '"></div><section><h1>' + page.gsub(/-/, ' ') + '</h1>'
 		content += markdown.render(file)
 		content += '</section><hr>'

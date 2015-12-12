@@ -26,7 +26,7 @@ get '/:owner/:repo' do
 
 	index = File.read(tmp + '/_Sidebar.md')
 
-	index = index.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
+	index = index.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
 	index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
 	index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
@@ -38,6 +38,7 @@ get '/:owner/:repo' do
 	end
 
 	nav = markdown.render(index)
+	nav = nav.gsub(/<ol>/, '<ol class="nav navbar-nav nav-pills">');
 
 	pages.each do |page|
 		if !File.exist?(tmp + '/' + page + '.md')
@@ -45,17 +46,17 @@ get '/:owner/:repo' do
 		end
 		file = File.read(tmp + '/' + page + '.md');
 
-		file = file.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
+		file = file.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
 		file = file.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
-		file = file.gsub(/\s(?=[^\(\)]*]])/, '-')
+		file = file.gsub(/\s(?=\[^\(\)\]*\]\])/, '-')
 		file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
-		content += '<div class="link" id="' + page + '"></div><section>'
+			content += '<div class="link page-header clearfix" id="' + page + '"></div><section>'
 		if page != 'Home'
 			content += '<h1>' + page.gsub(/-/, ' ') + '</h1>'
 		end
 		content += markdown.render(file)
-		content += '</section><hr>'
+			content += '<hr></section>'
 	end
 
 	erb = ERB.new(File.read('template.erb'))

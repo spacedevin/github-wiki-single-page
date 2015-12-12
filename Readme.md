@@ -3,8 +3,8 @@ A single page wiki generator using redcarpet and bootstrap.
 
 
 ### Themes
-- **[Bootstrap](http://getbootstrap.com/)**: Visit [BootstrapCDN](https://www.bootstrapcdn.com/bootswatch/) and copy the css link from there for alternate themes.
-- **[highlightjs](https://highlightjs.org/)**: Visit [cdnjs](https://cdnjs.com/libraries/highlight.js/) and use any of the minified css themes.
+- **[Bootstrap](http://getbootstrap.com/)**: Visit [BootstrapCDN](https://www.bootstrapcdn.com/bootswatch/) to see the included themes.
+- **[Highlight JS](https://highlightjs.org/)**: Visit [highlightjs.org/static/demo](https://highlightjs.org/static/demo/) to see the included themes.
 
 
 ### Deploying your own version
@@ -13,4 +13,4 @@ A single page wiki generator using redcarpet and bootstrap.
 
 
 ### Running
-Visit **http://yourserver.com/owner/repo** where *yourserver.com* is the server of your heroku deployment. This will automagically clone your wiki and output a single file. You can then save the single file wherever you want.
+Just open your browser to the url where you installed this and follow the instructions.

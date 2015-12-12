@@ -3,5 +3,17 @@
 	"description": "A single page wiki generator using redcarpet, bootstrap, and bootswatch.",
 	"website": "https://github.com/arzynik/github-wiki-singlepage",
 	"repository": "https://github.com/arzynik/github-wiki-singlepage",
-	"keywords": ["github", "wiki", "ruby", "markdown"]
+	"keywords": ["github", "wiki", "ruby", "markdown"],
+	"env": {
+		"WIKI_CACHE": {
+			"description": "Whether or not to cache the requests. If this is empty it will clone the wiki on each request.",
+			"required": false,
+			"value": "yes"
+		},
+		"WIKI_REPO": {
+			"description": "(owner/repo) If this is set it will always display the wiki for this repo instead of allowing users to enter any repo.",
+			"required": false,
+			"value": ""
+		},
+	}
 }

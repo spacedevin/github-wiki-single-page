@@ -1,79 +1,98 @@
 require 'redcarpet'
 require 'sinatra'
 require 'erb'
+require 'fileutils'
 
 configure {
 	set :server, :puma
 }
 
+class Wiki
+	def self.create(owner, repo, params)
+		markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true, lax_spacing: true, space_after_headers: true, with_toc_data: true)
 
-get '/:owner/:repo' do
+		project = 'https://github.com/' + owner + '/' + repo
+		base = project + '/wiki'
+		name = repo
 
-	owner = params['owner']
-	repo = params['repo']
+		cache = ENV['WIKI_CACHE']
 
-	markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true, lax_spacing: true, space_after_headers: true, with_toc_data: true)
+		pages = []
+		nav = ''
+		content = ''
 
-	project = 'https://github.com/' + owner + '/' + repo
-	base = project + '/wiki'
-	name = repo
-
-	pages = []
-	nav = ''
-	content = ''
-	tmp = '/tmp/' + Random.new_seed.to_s
-	system('git clone ' + project + '.wiki.git ' + tmp)
-
-	index = File.read(tmp + '/_Sidebar.md')
-
-	index = index.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
-	index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
-	index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
-
-	index.split("\n").each do |line|
-		if /\(#.*?\)/.match(line)
-			page = line.gsub(/^.*?\(#(.*)?\)$/, '\1')
-			pages.push(page)
+		tmp = '/tmp/' + (cache ? owner + '-' + repo : Random.new_seed.to_s)
+		if cache and params['refresh']
+			FileUtils.rm_rf(tmp)
 		end
-	end
 
-	nav = markdown.render(index)
-	nav = nav.gsub(/<ol>/, '<ol class="nav navbar-nav nav-pills">');
+		system('git clone ' + project + '.wiki.git ' + tmp)
 
-	pages.each do |page|
-		if !File.exist?(tmp + '/' + page + '.md')
-			return page + ' does not exist'
+		index = File.read(tmp + '/_Sidebar.md')
+
+		index = index.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
+		index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
+		index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
+
+		index.split("\n").each do |line|
+			if /\(#.*?\)/.match(line)
+				page = line.gsub(/^.*?\(#(.*)?\)$/, '\1')
+				pages.push(page)
+			end
 		end
-		file = File.read(tmp + '/' + page + '.md');
 
-		file = file.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
-		file = file.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
-		file = file.gsub(/\s(?=\[^\(\)\]*\]\])/, '-')
-		file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
+		nav = markdown.render(index)
+		nav = nav.gsub(/<ol>/, '<ol class="nav navbar-nav nav-pills">');
+
+		pages.each do |page|
+			if !File.exist?(tmp + '/' + page + '.md')
+				return page + ' does not exist'
+			end
+			file = File.read(tmp + '/' + page + '.md');
+
+			file = file.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
+			file = file.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
+			file = file.gsub(/\s(?=\[^\(\)\]*\]\])/, '-')
+			file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
 			content += '<div class="link page-header clearfix" id="' + page + '"></div><section>'
-		if page != 'Home'
-			content += '<h1>' + page.gsub(/-/, ' ') + '</h1>'
-		end
-		content += markdown.render(file)
+			if page != 'Home'
+				content += '<h1>' + page.gsub(/-/, ' ') + '</h1>'
+			end
+			content += markdown.render(file)
 			content += '<hr></section>'
+		end
+
+		erb = ERB.new(File.read('template.erb'))
+		namespace = OpenStruct.new(
+			nav: nav,
+			project: project,
+			content: content,
+			name: name,
+			bootswatch: params['bootswatch'] ? params['bootswatch'] : 'flatly',
+			highlightjs: params['highlightjs'] ? params['highlightjs'] : 'github'
+		)
+
+		if !cache
+			FileUtils.rm_rf(tmp)
+		end
+
+		return erb.result(namespace.instance_eval { binding })
 	end
+end
 
-	erb = ERB.new(File.read('template.erb'))
-	namespace = OpenStruct.new(
-		nav: nav,
-		project: project,
-		content: content,
-		name: name,
-		bootswatch: params['bootswatch'] ? params['bootswatch'] : 'flatly',
-		highlightjs: params['highlightjs'] ? params['highlightjs'] : 'github'
-	)
-	return erb.result(namespace.instance_eval { binding })
 
+get '/:owner/:repo' do
+	Wiki.create(params['owner'], params['repo'], params)
 end
 
 get '/' do
-	File.read('index.html')
+	if ENV['WIKI_CACHE']
+		repo = ENV['WIKI_CACHE'].split('/')
+		Wiki.create(repo[0], repo[1], params)
+	else
+		File.read('index.html')
+	end
 end
 
 run Sinatra::Application.run!

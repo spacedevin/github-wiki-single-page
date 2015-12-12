@@ -5,6 +5,7 @@ configure {
 	set :server, :puma
 }
 
+
 get '/:owner/:repo' do
 
 	owner = params['owner']
@@ -13,7 +14,7 @@ get '/:owner/:repo' do
 	markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true, lax_spacing: true, space_after_headers: true, with_toc_data: true)
 
 	project = 'https://github.com/' + owner + '/' + repo
-	base = project + '/wiki/'
+	base = project + '/wiki'
 	name = repo
 
 	pages = []
@@ -21,28 +22,39 @@ get '/:owner/:repo' do
 	content = ''
 	tmp = '/tmp/' + Random.new_seed.to_s
 	system('git clone ' + project + '.wiki.git ' + tmp)
+	#tmp = 'wiki/'
 
-	index = File.read(tmp + '/_Sidebar.md').split("\n")
+	index = File.read(tmp + '/_Sidebar.md')
 
+	index = index.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
+	index = index.gsub(/\[\[(.*?)\]\]/i, '[\1](#\1)')
 
-	index.each do |line|
-		if /\(#{base}.*\)/.match(line)
-			pages.push(line.gsub(/^.*?\(#{base}(.*)?\)$/, '\1'))
-			newindex += line.gsub(/^(.*?)\(#{base}(.*?)\)$/, '\1(#\2)') + "\n"
-		elsif /nasd/.match(line)
-			print "no"
+	# this should repeat and place all spaces...not just one
+	index = index.gsub(/\(#(.*) (.*)\)/i, '(#\1-\2)')
+	index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
+	index = index.gsub(/\(#\)/, '(#top)')
+
+	index.split("\n").each do |line|
+		if /\(#.*?\)/.match(line)
+			page = line.gsub(/^.*?\(#(.*)?\)$/, '\1')
+			if page == 'top'
+				next
+			end
+			pages.push(page)
 		end
 	end
 
-	newindex = markdown.render(newindex)
+	newindex = markdown.render(index)
 
 	pages.each do |page|
+		if !File.exist?(tmp + '/' + page + '.md')
+			return page + ' does not exist'
+		end
 		file = File.read(tmp + '/' + page + '.md');
 		file = file.gsub(/(\[.*?\])\(#{base}(.*?)\)$/, '\1(#\2)')
-		content += '<section id="' + page + '"><h1>' + page.gsub(/-/, ' ') + '</h1>'
+		content += '<div class="link" id="' + page + '"></div><section><h1>' + page.gsub(/-/, ' ') + '</h1>'
 		content += markdown.render(file)
 		content += '</section><hr>'
-
 	end
 
 	template = File.read('template.html')

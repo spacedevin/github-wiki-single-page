@@ -18,8 +18,8 @@ A single page wiki generator using redcarpet and bootstrap.
 
 ##### Environment Variables
 
-- **WIKI_CACHE**: Cache git the wiki in a tmp dir. Note that this only caches the repo, not the html
-- **WIKI_REPO**: A repo to specificy (owner/repo). When specified all requests will
+- **WIKI_CACHE**: Cache git the wiki in a tmp dir. Note that this only caches the repo, not the html.
+- **WIKI_REPO**: A repo to specificy (owner/repo). When specified all requests will load this repo rather than something a user entered.
 - **WIKI_BOOTSWATCH**: The default bootswatch theme
 - **WIKI_HIGHLIGHTJS**: The default highlightjs theme
 

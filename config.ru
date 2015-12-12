@@ -70,12 +70,12 @@ class Wiki
 			file = file.gsub(/\s(?=\[^\(\)\]*\]\])/, '-')
 			file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
-			content += '<div class="link page-header clearfix" id="' + page + '"></div><section>'
+			content += '<div class="link page-header" id="' + page + '"></div><section class="clearfix">'
 			if page != 'Home'
 				content += '<h1>' + page.gsub(/-/, ' ') + '</h1>'
 			end
 			content += markdown.render(file)
-			content += '<hr></section>'
+			content += '</section><hr>'
 		end
 
 		erb = ERB.new(File.read('template.erb'))

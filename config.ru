@@ -23,21 +23,16 @@ get '/:owner/:repo' do
 	content = ''
 	tmp = '/tmp/' + Random.new_seed.to_s
 	system('git clone ' + project + '.wiki.git ' + tmp)
-	#tmp = 'wiki/'
 
 	index = File.read(tmp + '/_Sidebar.md')
 
 	index = index.gsub(/\[\[(.*?)\|(.*?)]\]/i, '[\1](#\2)')
 	index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
 	index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
-	index = index.gsub(/\(#\)/, '(#top)')
 
 	index.split("\n").each do |line|
 		if /\(#.*?\)/.match(line)
 			page = line.gsub(/^.*?\(#(.*)?\)$/, '\1')
-			if page == 'top'
-				next
-			end
 			pages.push(page)
 		end
 	end
@@ -55,7 +50,10 @@ get '/:owner/:repo' do
 		file = file.gsub(/\s(?=[^\(\)]*]])/, '-')
 		file = file.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
-		content += '<div class="link" id="' + page + '"></div><section><h1>' + page.gsub(/-/, ' ') + '</h1>'
+		content += '<div class="link" id="' + page + '"></div><section>'
+		if page != 'Home'
+			content += '<h1>' + page.gsub(/-/, ' ') + '</h1>'
+		end
 		content += markdown.render(file)
 		content += '</section><hr>'
 	end

@@ -9,8 +9,7 @@ A single page wiki generator using redcarpet and bootstrap.
 
 ### Set up your wiki
 1. Create wiki pages using GitHub's wiki system
-1. Create a custom sidebar and link to all pages you want included in the wiki
-  *Note: it will not include any pages that are not in the sidebar links*
+1. *(optional)* Create a custom sidebar and link to all pages you want included in the wiki *Note: it will not include any pages that are not in the sidebar links*
 
 ### Deploying your own version
 
@@ -19,7 +18,7 @@ A single page wiki generator using redcarpet and bootstrap.
 ##### Environment Variables
 
 - **WIKI_CACHE**: Cache git the wiki in a tmp dir. Note that this only caches the repo, not the html.
-- **WIKI_REPO**: A repo to specificy (owner/repo). When specified all requests will load this repo rather than something a user entered.
+- **WIKI_REPO**: A repo to specificy (owner/repo or https://user:pass@github.com/owner/repo). When specified all requests will load this repo rather than something a user entered.
 - **WIKI_BOOTSWATCH**: The default bootswatch theme
 - **WIKI_HIGHLIGHTJS**: The default highlightjs theme
 

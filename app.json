@@ -11,7 +11,7 @@
 			"value": "yes"
 		},
 		"WIKI_REPO": {
-			"description": "(owner/repo) If this is set it will always display the wiki for this repo instead of allowing users to enter any repo.",
+			"description": "(owner/repo or https://user:pass@github.com/owner/repo) If this is set it will always display the wiki for this repo instead of allowing users to enter any repo.",
 			"required": false,
 			"value": ""
 		},

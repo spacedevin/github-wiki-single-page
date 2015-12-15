@@ -22,7 +22,7 @@
 
 				<div class="form-group">
 					<label for="repo" class="control-label">GitHub Repository</label>
-					<input type="text" name="repo" id="repo" placeholder="owner/repo" autofocus="" class="form-control">
+					<input type="text" name="repo" id="repo" placeholder="owner/repo or https://user:pass@github.com/owner/repo" autofocus="" class="form-control">
 				</div>
 				<div class="form-group">
 					<label for="password" class="control-label">Bootswatch theme &nbsp;(<a href="https://www.bootstrapcdn.com/bootswatch/" target="_blank">Examples</a>)</label>
@@ -138,18 +138,21 @@
 				$('#form').on('submit', function(e) {
 					e.preventDefault();
 					var url = $(this['repo']).val();
-					var repo;
-					if (url.match(/^(http|git)/i)) {
+					var repo, parser;
+
+					if (url.match(/^(http|git|https)/i)) {
 						var parser = document.createElement('a');
 						parser.href = url;
 						repo = parser.pathname.substr(1);
+					} else {
+						repo = url;
 					}
 					if (!repo.match(/^[0-9a-z\-_\.]+\/[0-9a-z\-_\.]+$/i)) {
 						$('#repo').closest('.form-group').addClass('has-error');
 						return false;
 					}
 					var loc = '/' + repo + '?bootswatch=' + $(this['bootswatch']).val() + '&highlightjs=' + $(this['highlightjs']).val();
-					if (parser.username) {
+					if (parser && parser.username) {
 						loc += '&repo=' + url;
 					}
 					location.href = loc;

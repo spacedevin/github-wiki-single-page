@@ -137,17 +137,22 @@
 			$(document).ready(function() {
 				$('#form').on('submit', function(e) {
 					e.preventDefault();
-					var repo = $(this['repo']).val();
-					if (repo.match(/^(http|git)/i)) {
+					var url = $(this['repo']).val();
+					var repo;
+					if (url.match(/^(http|git)/i)) {
 						var parser = document.createElement('a');
-						parser.href = repo;
+						parser.href = url;
 						repo = parser.pathname.substr(1);
 					}
-					if (!repo.match(/^[0-9a-z\-_]+\/[0-9a-z\-_]+$/i)) {
+					if (!repo.match(/^[0-9a-z\-_\.]+\/[0-9a-z\-_\.]+$/i)) {
 						$('#repo').closest('.form-group').addClass('has-error');
 						return false;
 					}
-					location.href = '/' + repo + '?bootswatch=' + $(this['bootswatch']).val() + '&highlightjs=' + $(this['highlightjs']).val();
+					var loc = '/' + repo + '?bootswatch=' + $(this['bootswatch']).val() + '&highlightjs=' + $(this['highlightjs']).val();
+					if (parser.username) {
+						loc += '&repo=' + url;
+					}
+					location.href = loc;
 					return false;
 				});
 			});

@@ -2,6 +2,7 @@ require 'redcarpet'
 require 'sinatra'
 require 'erb'
 require 'fileutils'
+require 'uri'
 
 
 class Wiki
@@ -15,10 +16,19 @@ class Wiki
 		return erb.result(namespace.instance_eval { binding })
 	end
 
-	def self.create(owner, repo, params)
+	def self.create(owner, repo, url, params)
 		markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true, lax_spacing: true, space_after_headers: true, with_toc_data: true)
 
-		project = 'https://github.com/' + owner + '/' + repo
+		if url
+			project = url
+			url = URI(url)
+			u = url.path.split('/')
+			owner = u[1]
+			repo = u[2]
+		else
+			project = 'https://github.com/' + owner + '/' + repo
+		end
+
 		base = project + '/wiki'
 		name = repo
 
@@ -39,22 +49,30 @@ class Wiki
 			return Wiki.index('Invalid repository')
 		end
 
-		if !File.exist?(tmp + '/_Sidebar.md')
-			return Wiki.index('No custom sidebar')
-		end
+		msg = ''
 
-		index = File.read(tmp + '/_Sidebar.md')
+		if File.exist?(tmp + '/_Sidebar.md')
+			index = File.read(tmp + '/_Sidebar.md')
 
-		index = index.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
-		index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
-		index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
+			index = index.gsub(/\[\[(.*?)\|(.*?)\]\]/i, '[\1](#\2)')
+			index = index.gsub(/\[\[(.*?)\]\]/i) { |m| '[' + $1 + '](#' + $1.gsub(/\s/, '-') + ')' }
+			index = index.gsub(/(\[.*?\])\(#{base}\/?(.*?)\)/i, '\1(#\2)')
 
-		index.split("\n").each do |line|
-			if /\(#.*?\)/.match(line)
-				page = line.gsub(/^.*?\(#(.*)?\)$/, '\1')
-				pages.push(page)
+			index.split("\n").each do |line|
+				if /\(#.*?\)/.match(line)
+					page = line.gsub(/^.*?\(#(.*)?\)$/, '\1')
+					pages.push(page)
+				end
+			end
+		else
+			index = ''
+			Dir.glob(tmp + '/*.md') do |item|
+				item = item.sub('.md', '').sub(tmp + '/', '')
+				pages.push(item)
+				index += '1. [' + item.gsub(/-/, ' ') + '](#' + item.gsub(/\s/, '-') + ")\n"
 			end
 		end
+
 
 		nav = markdown.render(index)
 		nav = nav.gsub(/<ol>/, '<ol class="nav navbar-nav nav-pills">');
@@ -97,20 +115,21 @@ class Wiki
 end
 
 
-get '/:owner/:repo' do
+get '/:owner/:name' do
+	url = params['repo']
 	if ENV['WIKI_REPO']
-		repo = ENV['WIKI_REPO'].split('/')
-		Wiki.create(repo[0], repo[1], params)
+		url = ENV['WIKI_REPO']
+		Wiki.create('', '', url, params)
 	else
-		Wiki.create(params['owner'], params['repo'], params)
+		Wiki.create(params['owner'], params['name'], url, params)
 	end
 end
 
 
 get '/' do
 	if ENV['WIKI_REPO']
-		repo = ENV['WIKI_REPO'].split('/')
-		Wiki.create(repo[0], repo[1], params)
+		url = ENV['WIKI_REPO']
+		Wiki.create('', '', url, params)
 	else
 		Wiki.index('')
 	end
